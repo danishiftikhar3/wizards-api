@@ -1,8 +1,10 @@
 import express, { Request, Response } from 'express';
 import axios from 'axios';
-
+import cors from 'cors';
 const app = express();
-const port = 3000;
+const port = 4000;
+
+app.use(cors()); 
 
 app.get('/houses', async (req: Request, res: Response) => {
   const { name } = req.query as { name?: string };
