@@ -5,12 +5,11 @@ const app = express();
 const port = 3000;
 
 app.get('/houses', async (req: Request, res: Response) => {
-  const { name } = req.query as { name?: string }; // Type assertion for query parameter
-  
+  const { name } = req.query as { name?: string };
   try {
     // Fetch data from the external API
     const response = await axios.get('https://wizard-world-api.herokuapp.com/houses');
-    let houses: any[] = response.data; // Type assertion for houses array
+    let houses: any[] = response.data; 
     
     // Filter houses if name query parameter is provided
     if (name) {
