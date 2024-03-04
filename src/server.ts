@@ -63,6 +63,4 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-app.listen(port, () => {
-  logger.info(`Server running at http://localhost:${port}`);
-});
+export default app;
