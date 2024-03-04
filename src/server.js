@@ -12,29 +12,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+require("dotenv").config();
 const express_1 = __importDefault(require("express"));
 const axios_1 = __importDefault(require("axios"));
 const cors_1 = __importDefault(require("cors"));
+const helmet_1 = __importDefault(require("helmet"));
+const logger_1 = __importDefault(require("./logger"));
 const app = (0, express_1.default)();
-const port = 4000;
+const port = process.env.PORT || 4000;
 app.use((0, cors_1.default)());
-app.get('/houses', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.use((0, helmet_1.default)());
+function asyncHandler(fn) {
+    return function (req, res, next) {
+        fn(req, res, next).catch(next);
+    };
+}
+app.get("/houses", asyncHandler((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { name } = req.query;
     try {
-        // Fetch data from the external API
-        const response = yield axios_1.default.get('https://wizard-world-api.herokuapp.com/houses');
+        const response = yield axios_1.default.get("https://wizard-world-api.herokuapp.com/houses");
         let houses = response.data;
-        // Filter houses if name query parameter is provided
         if (name) {
-            houses = houses.filter(house => house.name.toLowerCase().includes(name.toLowerCase()));
+            houses = houses.filter((house) => house.name.toLowerCase().includes(name.toLowerCase()));
         }
-        // Send filtered data back to the client
         res.json(houses);
     }
     catch (error) {
-        res.status(500).send('Error fetching houses data');
+        if (axios_1.default.isAxiosError(error)) {
+            const message = ((_a = error.response) === null || _a === void 0 ? void 0 : _a.data.message) ||
+                "Error fetching data from external API";
+            logger_1.default.error(message);
+            next(new Error(message));
+        }
+        else {
+            next(error);
+        }
     }
-}));
+})));
+app.use((err, req, res, next) => {
+    logger_1.default.error(err.stack);
+    const statusCode = err.statusCode || 500;
+    const errorMessage = statusCode === 500 ? "Internal Server Error" : err.message;
+    res.status(statusCode).json({
+        error: true,
+        message: errorMessage,
+    });
+});
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    logger_1.default.info(`Server running at http://localhost:${port}`);
 });
