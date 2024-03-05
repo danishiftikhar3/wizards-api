@@ -50,6 +50,10 @@ app.get("/houses", asyncHandler((req, res, next) => __awaiter(void 0, void 0, vo
         }
     }
 })));
+// Default route to indicate that the server is running
+app.get("/", (req, res) => {
+    res.send("Running");
+});
 app.use((err, req, res, next) => {
     logger_1.default.error(err.stack);
     const statusCode = err.statusCode || 500;

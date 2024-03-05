@@ -1,6 +1,5 @@
 import winston from "winston";
 
-// Define custom levels
 const levels = {
   error: 0,
   warn: 1,
