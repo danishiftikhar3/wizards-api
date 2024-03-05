@@ -59,6 +59,4 @@ app.use((err, req, res, next) => {
         message: errorMessage,
     });
 });
-app.listen(port, () => {
-    logger_1.default.info(`Server running at http://localhost:${port}`);
-});
+exports.default = app;
