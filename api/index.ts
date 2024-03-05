@@ -1,4 +1,4 @@
-import app from '../src/server';
+import app from '../src';
 const { createServer } = require('http');
 const { parse } = require('url');
 
