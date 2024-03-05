@@ -50,6 +50,11 @@ app.get(
   })
 );
 
+// Default route to indicate that the server is running
+app.get("/", (req: Request, res: Response) => {
+  res.send("Running");
+});
+
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   logger.error(err.stack);
 
